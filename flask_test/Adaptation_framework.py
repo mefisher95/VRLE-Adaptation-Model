@@ -1,15 +1,18 @@
-from data_set import *
+from Knowledge_base import *
 from Decision_module import *
 import time
 
 class Adaptation_framework:
     # private methods for use in class only
-    def __init__(self, solution_num = 6, train_size = 1000, keep_threshold = .5): # O(n^3)
-        self.anomaly_type_list = self.__get_anomaly_type_list__(get_anomaly_data())
-        self.solution_list = generate_solutions(self.anomaly_type_list, solution_num)
-        self.decision_module_list = self.__build_model__(train_size, keep_threshold)
-        
-    
+    def __init__(self, solution_num = 6, train_size = 1000, keep_threshold = .5, build=False): # O(n^3)
+        if build is True:
+            self.anomaly_type_list = self.__get_anomaly_type_list__(get_anomaly_data())
+            self.solution_list = generate_solutions(self.anomaly_type_list, solution_num)
+            self.decision_module_list = self.__build_model__(train_size, keep_threshold)
+        else:
+            self.anomaly_type_list = self.__get_anomaly_type_list__(get_anomaly_data())
+            self.solution_list = generate_solutions(self.anomaly_type_list, solution_num)
+            self.decision_module_list = read_Decision_modules()
 
     def __get_anomaly_type_list__(self, data): # O(n)
         anomaly_type_list = []
@@ -143,3 +146,22 @@ class Adaptation_framework:
                 solution = decision_module.solution_queue.pop(0)
                 # print(solution)
                 return solution
+
+test = Adaptation_framework()
+# write_Decision_modules(test.decision_module_list)
+# test.decision_module_list = read_Decision_modules()
+# print(test.decision_module_list)
+# for module in test.decision_module_list:
+#     print(module.anomaly_type)
+#     print(module.train_size)
+#     print(module.solution_tuple_list)
+#     print(module.solution_queue)
+# print('\n\n\nbuild set')
+# test2 = Adaptation_framework(build=True)
+# for module in test2.decision_module_list:
+#     print(module.anomaly_type)
+#     print(module.train_size)
+#     print(module.solution_tuple_list)
+#     print(module.solution_queue)
+write_Solutions(test.solution_list)
+# test.solution_list
