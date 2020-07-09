@@ -1,4 +1,4 @@
-from Knowledge_base import *
+from Anomaly import *
 from Solution import *
 from queue import Queue
 import random
@@ -105,7 +105,7 @@ def write_Decision_modules(decision_modules):
     print(decision_modules)
     filename = 'csv/decision_modules.csv'
 
-    with open(filename, 'w') as csvfile:
+    with open(filename, 'w', newline='') as csvfile:
         csvwriter = csv.writer(csvfile)
         csvwriter.writerow(fields)
         for module in decision_modules:

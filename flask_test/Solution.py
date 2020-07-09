@@ -1,5 +1,6 @@
-import random
 import csv
+import os
+import random
 
 class Solution:
     def __init__(self, solution_type = None, preference = None):
@@ -26,27 +27,27 @@ class Solution:
     def __repr__(self):
         return "Solution: %s" % self.type
 
-def read_Decision_modules():
-    dir_files = os.listdir(os.getcwd() + '/csv')
-    modules = []
+# def read_Decision_modules():
+#     dir_files = os.listdir(os.getcwd() + '/csv')
+#     modules = []
 
-    if 'decision_modules.csv' in os.listdir(os.getcwd() + '/csv'):
-        with open(os.getcwd() + r'/csv/decision_modules.csv', 'r') as csvfile:
-            csvreader = csv.reader(csvfile)
-            fields = csvreader.__next__()
-            for module in csvreader:
-                # print(module)
-                dm = Decision_module()
-                dm.process_csv(module)
-                modules.append(dm)
-    return modules
+#     if 'decision_modules.csv' in os.listdir(os.getcwd() + '/csv'):
+#         with open(os.getcwd() + r'/csv/decision_modules.csv', 'r') as csvfile:
+#             csvreader = csv.reader(csvfile)
+#             fields = csvreader.__next__()
+#             for module in csvreader:
+#                 # print(module)
+#                 dm = Decision_module()
+#                 dm.process_csv(module)
+#                 modules.append(dm)
+#     return modules
 
 
 def write_Solutions(solutions):
     fields = ['type', 'preference', 'time', 'cost', 'resource']
     filename = 'csv/solutions.csv'
 
-    with open(filename, 'w') as csvfile:
+    with open(filename, 'w', newline='') as csvfile:
         csvwriter = csv.writer(csvfile)
         csvwriter.writerow(fields)
         for solution in solutions:
@@ -56,7 +57,7 @@ def read_Solutions():
     dir_files = os.listdir(os.getcwd() + '/csv')
     solutions = []
 
-    if 'decision_modules.csv' in os.listdir(os.getcwd() + '/csv'):
+    if 'solutions.csv' in os.listdir(os.getcwd() + '/csv'):
         with open(os.getcwd() + r'/csv/solutions.csv', 'r') as csvfile:
             csvreader = csv.reader(csvfile)
             fields = csvreader.__next__()
@@ -66,6 +67,26 @@ def read_Solutions():
                 slt.process_csv(solution)
                 solutions.append(slt)
     return solutions
+
+def write_adaptations(solution):
+    with open('csv/adaptations_log.csv', 'a', newline='') as csvfile:
+        csvwriter = csv.writer(csvfile)
+        csvwriter.writerow(solution.serialize())
+
+def read_adaptations():
+    dir_files = os.listdir(os.getcwd() + '/csv')
+    adaptations = []
+
+    if 'adaptations_log.csv' in os.listdir(os.getcwd() + '/csv'):
+        adaptations = []
+        with open(os.getcwd() + r'/csv/adaptations_log.csv', 'r') as csvfile:
+            csvreader = csv.reader(csvfile)
+            for adaptation in csvreader:
+                # print(module)
+                slt = Solution()
+                slt.process_csv(adaptation)
+                adaptations.append(slt)
+    return adaptations
 
 def generate_solutions(anomaly_type_list, solution_num = 6): # O(n)
     solution_list = []

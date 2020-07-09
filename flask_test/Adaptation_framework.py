@@ -1,18 +1,24 @@
-from Knowledge_base import *
+from Anomaly import *
 from Decision_module import *
 import time
 
 class Adaptation_framework:
     # private methods for use in class only
     def __init__(self, solution_num = 6, train_size = 1000, keep_threshold = .5, build=False): # O(n^3)
+        self.anomaly_type_list = None
+        self.solution_list = None
+        self.decision_module_list = None
         if build is True:
             self.anomaly_type_list = self.__get_anomaly_type_list__(get_anomaly_data())
             self.solution_list = generate_solutions(self.anomaly_type_list, solution_num)
             self.decision_module_list = self.__build_model__(train_size, keep_threshold)
-        else:
+        elif build is False:
             self.anomaly_type_list = self.__get_anomaly_type_list__(get_anomaly_data())
-            self.solution_list = generate_solutions(self.anomaly_type_list, solution_num)
+            self.solution_list = read_Solutions()
             self.decision_module_list = read_Decision_modules()
+    def __del__(self):
+        write_Solutions(self.solution_list)
+        write_Decision_modules(self.decision_module_list)
 
     def __get_anomaly_type_list__(self, data): # O(n)
         anomaly_type_list = []
@@ -66,7 +72,7 @@ class Adaptation_framework:
             #######################################################################################
             # sort training data for each anomaly_type
             #######################################################################################
-
+            
             # dm_solution_tuple_list = [(solution_dict, solution_type, response_value),...]
             for dm_solution_tuple in dm_solution_tuple_list:
                 # dm_solution_tuple = (solution_dict, solution_type, response_value)
@@ -134,20 +140,10 @@ class Adaptation_framework:
     def process_anomaly(self, anomaly): # O(n)
         anomaly_type = self.__get_anomaly_type_list__(anomaly)[0]
         for decision_module in self.decision_module_list:
-            if anomaly_type is decision_module.anomaly_type:
-                # print('anomaly_type:')
-                # print(anomaly_type)
-                # print('solution_tuple_list:')
-                # print(decision_module.solution_tuple_list)
-                # print('available_solutions:')
-                # for solution in decision_module.solution_tuple_list:
-                #     print(solution[0])
-                # print('chosen solution:')
-                solution = decision_module.solution_queue.pop(0)
-                # print(solution)
-                return solution
+            if anomaly_type == decision_module.anomaly_type:
+                return decision_module.solution_queue[0]
 
-test = Adaptation_framework()
+# test = Adaptation_framework(build=True)
 # write_Decision_modules(test.decision_module_list)
 # test.decision_module_list = read_Decision_modules()
 # print(test.decision_module_list)
@@ -163,5 +159,4 @@ test = Adaptation_framework()
 #     print(module.train_size)
 #     print(module.solution_tuple_list)
 #     print(module.solution_queue)
-write_Solutions(test.solution_list)
-# test.solution_list
+
