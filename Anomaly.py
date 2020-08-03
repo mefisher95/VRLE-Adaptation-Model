@@ -1,10 +1,11 @@
 import csv
 import os
 import random
+from data_base import *
 
 class Anomaly:
-    def __init__(self, type, time, source, destination, 
-                 protocol, length, info):
+    def __init__(self, type=None, time=None, source=None, destination=None, 
+                 protocol=None, length=None, info=None):
         self.type = type
         self.time = time
         self.source = source
@@ -16,6 +17,24 @@ class Anomaly:
     def serialize(self):
         return [self.type, self.time, self.source, self.destination, self.protocol, self.length, self.info]
     
+    def write(self):
+        write('csv/anomaly.csv', [self.serialize()], 'w')
+
+    def read(self):
+        directory = os.getcwd() + r'/csv/'
+        filename = r'anomaly.csv'
+        access_type = 'r'
+        serial_list = read(directory, filename, access_type)
+        for element in serial_list:
+            self.type = element[0]
+            self.time = element[1]
+            self.source = element[2]
+            self.destination = element[3]
+            self.protocol = element[4]
+            self.length = element[5]
+            self.info = element[6]
+
+
     def __str__(self):
 
         "{0:} {1:8} {2:14} {3:14} {4:4} {5:4} {6:}".format(self.type, self.time, self.source,
@@ -126,6 +145,6 @@ def get_sample_QoA(num = 10):
 def get_sample_3Q(num = 10):
     return random.sample(get_3Q_data(), num)
 
-def get_sample_anomaly(num = 10):
+def get_sample_anomaly(num = 1):
     return random.sample(get_anomaly_data(), num)
 
