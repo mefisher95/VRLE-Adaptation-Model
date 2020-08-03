@@ -62,11 +62,50 @@
     <br>
     <br>
 
+    {% if active_queue != None and active_anomaly != None%}
+    <table>
+        <tr> 
+            <th>Current Solution</th>
+            <th><form method="POST">
+                <input type="submit" name = "good_solution" value="Good Solution"> &nbsp &nbsp
+                <input type="submit" name = "bad_solution" value="Bad Solution"><br>
+                <input type="text" name = "delta_cs" placeholder="&Delta; CS" size="10">
+        
+            </form></th>
+        </tr>
+        <tr>
+            <th>Solution</th>
+            <th>Cost($)</th>
+            <th>Runtime (ms)</th>
+            <th>Resource Cost(mb)</th>
+        </tr>
+        <tr>
+            <td>{{ active_queue[0].name }}</td>
+            <td>{{ active_queue[0].cost }}</td>
+            <td>{{ active_queue[0].time }}</td>
+            <td>{{ active_queue[0].resource }}</td>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <th>Active module: {{ active_anomaly.type }}</th>
+        </tr>
+        <tr><td>{{ active_queue }}</td></tr>
+        <tr><td>{{ active_anomaly }}</td></tr>
+    </table>
+    {% endif %}
+    
+    {% if ready == True %}
     <form method="POST">
         <input type="submit" name = "get_anomaly" value="Generate Anomaly"><br>
-        <input type="submit" name = "gen_model" value="Generate New Framework"><br>
-
     </form>
+    {% else %}
+    
+    {% endif %}
+
+    
+
+
     <div style="overflow-x: auto;">
         <b>Decision Modules</b><br>
         <table class="modules">
@@ -77,7 +116,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for module in model.decision_module_list %}
+                {% for module in model.Decision_unit_list %}
                 <tr>
                     <td>{{ module.anomaly_type }}</td>
                     <td>{{ module.solution_tuple_list }}</td>
@@ -133,12 +172,12 @@
                 </tr>
             </thead>
             <tbody>
-                {% for event in solutions %}
+                {% for solution in solutions %}
                 <tr>
-                    <td>{{ event.type }}</td>
-                    <td>{{ event.cost }}</td>
-                    <td>{{ event.time }}</td>
-                    <td>{{ event.resource }}</td>
+                    <td>{{ solution.name }}</td>
+                    <td>{{ solution.cost }}</td>
+                    <td>{{ solution.time }}</td>
+                    <td>{{ solution.resource }}</td>
 
                 </tr>
                 {% endfor %}
